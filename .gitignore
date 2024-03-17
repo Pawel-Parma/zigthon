@@ -1,0 +1,8 @@
+.idea/*
+
+venv/*
+__pycache__/*
+
+src/build/*
+simple.egg-info/*
+simple.cpython-37m-x86_64-linux-gnu.so
