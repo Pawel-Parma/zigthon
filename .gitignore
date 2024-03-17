@@ -5,4 +5,4 @@ __pycache__/*
 
 src/build/*
 simple.egg-info/*
-simple.cpython-310m-x86_64-linux-gnu.so
+simple.cpython-310-x86_64-linux-gnu.so
