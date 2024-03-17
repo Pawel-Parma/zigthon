@@ -4,5 +4,5 @@ venv/*
 __pycache__/*
 
 src/build/*
-simple.egg-info/*
-simple.cpython-310-x86_64-linux-gnu.so
+src/simple.egg-info/*
+src/simple.cpython-310-x86_64-linux-gnu.so
