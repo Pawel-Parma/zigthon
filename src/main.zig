@@ -1,94 +1,39 @@
-const py = @cImport({
-    @cDefine("PY_SSIZE_T_CLEAN", {});
-    @cInclude("Python.h");
-});
-const std = @import("std");
-const print = std.debug.print;
+const py = @import("common.zig").py;
 
-const PyObject = py.PyObject;
+const sf = @import("simplefunc.zig");
+
 const PyMethodDef = py.PyMethodDef;
-const PyModuleDef = py.PyModuleDef;
-const PyModuleDef_Base = py.PyModuleDef_Base;
-const Py_BuildValue = py.Py_BuildValue;
-const PyModule_Create = py.PyModule_Create;
 const METH_NOARGS = py.METH_NOARGS;
-const PyArg_ParseTuple = py.PyArg_ParseTuple;
-const PyLong_FromLong = py.PyLong_FromLong;
 
-fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    var a: c_long = undefined;
-    var b: c_long = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
-    return py.PyLong_FromLong((a + b));
-}
-
-fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    var a: c_long = undefined;
-    var b: c_long = undefined;
-    if (PyArg_ParseTuple(args, "ll", &a, &b) == 0) return Py_BuildValue("");
-    return PyLong_FromLong((a * b));
-}
-
-fn hello(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    _ = args;
-    print("welcom to ziglang\n", .{});
-    return Py_BuildValue("");
-}
-
-fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    var input: [*:0]u8 = undefined;
-    if (PyArg_ParseTuple(args, "s", &input) == 0) return Py_BuildValue("");
-    print("you entered: {s}\n", .{input});
-    return Py_BuildValue("");
-}
-
-fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-
-    var N: u32 = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "l", &N) != 0)) return Py_BuildValue("");
-    var list: [*c]PyObject = py.PyList_New(N);
-
-    var i: u32 = 0;
-    while (i < N) : (i += 1) {
-        const python_int: [*c]PyObject = Py_BuildValue("i", i);
-        _ = py.PyList_SetItem(list, i, python_int);
-    }
-    return list;
-}
 
 var Methods = [_]PyMethodDef{
     PyMethodDef{
         .ml_name = "sum",
-        .ml_meth = sum,
+        .ml_meth = sf.sum,
         .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "mul",
-        .ml_meth = mul,
+        .ml_meth = sf.mul,
         .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "hello",
-        .ml_meth = hello,
+        .ml_meth = sf.hello,
         .ml_flags = METH_NOARGS,
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "printSt",
-        .ml_meth = printSt,
+        .ml_meth = sf.printSt,
         .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "returnArrayWithInput",
-        .ml_meth = returnArrayWithInput,
+        .ml_meth = sf.returnArrayWithInput,
         .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
@@ -100,9 +45,9 @@ var Methods = [_]PyMethodDef{
     },
 };
 
-var module = PyModuleDef{
-    .m_base = PyModuleDef_Base{
-        .ob_base = PyObject{
+var module = py.PyModuleDef{
+    .m_base = py.PyModuleDef_Base{
+        .ob_base = py.PyObject{
             .ob_refcnt = 1,
             .ob_type = null,
         },
@@ -110,7 +55,7 @@ var module = PyModuleDef{
         .m_index = 0,
         .m_copy = null,
     },
-    .m_name = "simple",
+    .m_name = "zigthon",
     .m_doc = null,
     .m_size = -1,
     .m_methods = &Methods,
@@ -120,6 +65,6 @@ var module = PyModuleDef{
     .m_free = null,
 };
 
-pub export fn PyInit_zigthon() [*]PyObject {
-    return PyModule_Create(&module);
+pub export fn PyInit_zigthon() [*]py.PyObject {
+    return py.PyModule_Create(&module);
 }
