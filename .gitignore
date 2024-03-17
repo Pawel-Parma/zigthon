@@ -3,6 +3,6 @@
 venv/*
 __pycache__/*
 
-src/build/*
-src/simple.egg-info/*
-src/simple.cpython-310-x86_64-linux-gnu.so
+build/*
+zigthon.egg-info/*
+zigthon.cpython-310-x86_64-linux-gnu.so

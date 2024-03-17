@@ -120,6 +120,6 @@ var module = PyModuleDef{
     .m_free = null,
 };
 
-pub export fn PyInit_simple() [*]PyObject {
+pub export fn PyInit_zigthon() [*]PyObject {
     return PyModule_Create(&module);
 }

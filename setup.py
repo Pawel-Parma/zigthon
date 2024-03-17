@@ -1,12 +1,12 @@
 from setuptools import setup, Extension
 from builder import ZigBuilder
 
-simple = Extension("simple", sources=["simple.zig"])
+simple = Extension("zigthon", sources=["src/main.zig"])
 
 setup(
-    name="simple",
+    name="zigthon",
     version="0.0.1",
-    description="a experiment create Python module in Zig",
+    description="Zig and Python",
     ext_modules=[simple],
     cmdclass={"build_ext": ZigBuilder},
 )

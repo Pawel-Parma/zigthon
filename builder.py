@@ -1,13 +1,14 @@
 import os
+
 from setuptools.command.build_ext import build_ext
 
 
 class ZigBuilder(build_ext):
     def build_extension(self, ext):
-        assert len(ext.sources) == 1
+        assert len(ext.sources) == 1, "Only one source file is supported"
 
-        if not os.path.exists(self.build_lib):
-            os.makedirs(self.build_lib)
+        os.makedirs(self.build_lib, exist_ok=True)
+
         mode = "Debug" if self.debug else "ReleaseFast"
         self.spawn(
             [
