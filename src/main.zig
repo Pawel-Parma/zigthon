@@ -1,48 +1,34 @@
 const py = @import("common.zig").py;
+const PyMethodDef = py.PyMethodDef;
+const METH_NOARGS = py.METH_NOARGS;
+const METH_VARARGS = py.METH_VARARGS;
+const METH_KEYWORDS = py.METH_KEYWORDS;
+const METH_O = py.METH_O;
 
 const sf = @import("simplefunc.zig");
 
-const PyMethodDef = py.PyMethodDef;
-const METH_NOARGS = py.METH_NOARGS;
 
+var methods = [_]PyMethodDef{
+    PyMethodDef{
+        .ml_name = "sqr",
+        .ml_meth = sf.sqr,
+        .ml_flags = METH_VARARGS,
+        .ml_doc = null,
+    },
+    PyMethodDef{
+        .ml_name = "sqr_sum",
+        .ml_meth = sf.sqr_sum,
+        .ml_flags = METH_VARARGS,
+        .ml_doc = null,
+    },
 
-var Methods = [_]PyMethodDef{
-    PyMethodDef{
-        .ml_name = "sum",
-        .ml_meth = sf.sum,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
-    },
-    PyMethodDef{
-        .ml_name = "mul",
-        .ml_meth = sf.mul,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
-    },
-    PyMethodDef{
-        .ml_name = "hello",
-        .ml_meth = sf.hello,
-        .ml_flags = METH_NOARGS,
-        .ml_doc = null,
-    },
-    PyMethodDef{
-        .ml_name = "printSt",
-        .ml_meth = sf.printSt,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
-    },
-    PyMethodDef{
-        .ml_name = "returnArrayWithInput",
-        .ml_meth = sf.returnArrayWithInput,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
-    },
     PyMethodDef{
         .ml_name = null,
         .ml_meth = null,
         .ml_flags = 0,
         .ml_doc = null,
     },
+
 };
 
 var module = py.PyModuleDef{
@@ -58,7 +44,7 @@ var module = py.PyModuleDef{
     .m_name = "zigthon",
     .m_doc = null,
     .m_size = -1,
-    .m_methods = &Methods,
+    .m_methods = &methods,
     .m_slots = null,
     .m_traverse = null,
     .m_clear = null,

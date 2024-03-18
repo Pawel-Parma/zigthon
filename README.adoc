@@ -1,0 +1,20 @@
+= Zighton
+
+Zig plus Python experiment
+
+== Running the code
+
+* Create container
+```bash
+docker compose build
+```
+
+* Run the container
+```bash
+docker compose run zigthon ash
+```
+
+* Run example code
+```bash
+python -m main
+```

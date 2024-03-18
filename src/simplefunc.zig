@@ -7,48 +7,25 @@ const Py_BuildValue = py.Py_BuildValue;
 const PyLong_FromLong = py.PyLong_FromLong;
 const PyArg_ParseTuple = py.PyArg_ParseTuple;
 
-pub fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+
+
+pub fn sqr(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
     var a: c_long = undefined;
-    var b: c_long = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
-    return py.PyLong_FromLong((a + b));
+    if (PyArg_ParseTuple(args, "l", &a) == 0) return Py_BuildValue("");
+    return PyLong_FromLong((a * a));
 }
 
-pub fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+pub fn sqr_sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
-    var a: c_long = undefined;
-    var b: c_long = undefined;
-    if (PyArg_ParseTuple(args, "ll", &a, &b) == 0) return Py_BuildValue("");
-    return PyLong_FromLong((a * b));
-}
+    var x: c_long = undefined;
+    if (PyArg_ParseTuple(args, "l", &x) == 0) return Py_BuildValue("");
 
-pub fn hello(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    _ = args;
-    print("welcom to ziglang\n", .{});
-    return Py_BuildValue("");
-}
-
-pub fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    var input: [*:0]u8 = undefined;
-    if (PyArg_ParseTuple(args, "s", &input) == 0) return Py_BuildValue("");
-    print("you entered: {s}\n", .{input});
-    return Py_BuildValue("");
-}
-
-pub fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-
-    var N: u32 = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "l", &N) != 0)) return Py_BuildValue("");
-    const list: [*c]PyObject = py.PyList_New(N);
-
-    var i: u32 = 0;
-    while (i < N) : (i += 1) {
-        const python_int: [*c]PyObject = Py_BuildValue("i", i);
-        _ = py.PyList_SetItem(list, i, python_int);
+    var tmp: c_long = 0;
+    var ret: c_long = 0;
+    while (tmp < x) : (tmp += 1) {
+        ret += tmp * tmp;
     }
-    return list;
+
+    return PyLong_FromLong(ret);
 }
